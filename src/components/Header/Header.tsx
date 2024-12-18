@@ -8,17 +8,15 @@ import {
   MenuItem,
   IconButton,
 } from "@mui/material";
-import { useLocation, Link } from "react-router-dom"; // Используем Link для маршрутизации
-import useIsMobile from "../../hooks/useIsMobile"; // Хук для мобильных устройств
+import { useLocation, Link } from "react-router-dom";
+import useIsMobile from "../../hooks/useIsMobile";
 
 const Header: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [menuOpen, setMenuOpen] = React.useState(false);
 
-  // Используем хук для проверки мобильного устройства
   const isMobile = useIsMobile();
 
-  // Получаем текущий маршрут с помощью useLocation
   const location = useLocation();
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -31,7 +29,6 @@ const Header: React.FC = () => {
     setMenuOpen(false);
   };
 
-  // Функция для проверки активного таба
   const isActiveTab = (tab: string) => {
     return (
       location.pathname === tab || (tab === "/" && location.pathname === "/")
@@ -39,7 +36,13 @@ const Header: React.FC = () => {
   };
 
   return (
-    <AppBar position="sticky" sx={{ backgroundColor: "black" }}>
+    <AppBar
+      position="sticky"
+      sx={{
+        backgroundColor: "black",
+        boxShadow: "0 1px 1px #A8A8A8A8",
+      }}
+    >
       <Toolbar className="flex justify-between items-center">
         {/* Логотип */}
         <Typography
@@ -50,7 +53,6 @@ const Header: React.FC = () => {
           RBXZone
         </Typography>
 
-        {/* Кнопки для мобильных устройств */}
         {isMobile ? (
           <IconButton edge="end" color="inherit" onClick={handleMenuClick}>
             <span className="text-white">☰</span>
@@ -60,12 +62,10 @@ const Header: React.FC = () => {
             <Link to="/">
               <Button
                 sx={{
-                  color: isActiveTab("/") ? "red" : "white",
+                  color: isActiveTab("/") ? "#A8A8A8A8" : "white",
                   fontWeight: "bold",
                 }}
-                className={`hover:text-gray-400 ${
-                  isActiveTab("/") ? "text-red-500" : ""
-                }`}
+                className={`hover:text-gray-400`}
               >
                 Купить Робуксы
               </Button>
@@ -73,12 +73,10 @@ const Header: React.FC = () => {
             <Link to="/pomosh">
               <Button
                 sx={{
-                  color: isActiveTab("/pomosh") ? "red" : "white",
+                  color: isActiveTab("/pomosh") ? "#A8A8A8A8" : "white",
                   fontWeight: "bold",
                 }}
-                className={`hover:text-gray-400 ${
-                  isActiveTab("/pomosh") ? "text-red-500" : ""
-                }`}
+                className={`hover:text-gray-400 `}
               >
                 Помощь
               </Button>
@@ -86,7 +84,6 @@ const Header: React.FC = () => {
           </div>
         )}
 
-        {/* Меню для мобильных устройств */}
         <Menu
           anchorEl={anchorEl}
           open={menuOpen}

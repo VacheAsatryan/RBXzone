@@ -1,19 +1,16 @@
-// src/App.tsx
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./components/Header/Header";
-import Main from "./pages/Main";
-import PaymentComponent from "./components/PaymentComponent/PaymentComponent";
+import React, { FC } from "react";
+import { BrowserRouter } from "react-router-dom";
+import AppRoutes from "./routes/AppRoutes";
 
-const App: React.FC = () => {
+const App: FC = () => {
   return (
-    <Router>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Main />} />
-        <Route path="/payment" element={<PaymentComponent />} />
-      </Routes>
-    </Router>
+    <div className="h-screen overflow-hidden">
+      {" "}
+      {/* Контейнер с полной высотой и без скролла */}
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </div>
   );
 };
 

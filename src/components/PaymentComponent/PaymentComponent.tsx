@@ -10,8 +10,11 @@ import {
 import useIsMobile from "../../hooks/useIsMobile";
 
 const calculateRobux = (rublu: number): number => {
-  // Примерный алгоритм для расчета Robux (1 рубль = 1.35 Robux)
-  return Math.floor(rublu * 1.35); // Формула для конвертации
+  return Math.floor(rublu * 1.35); // Примерный алгоритм для расчета Robux (1 рубль = 1.35 Robux)
+};
+
+const calculateRubluFromRobux = (robux: number): number => {
+  return Math.floor(robux / 1.35); // Обратная формула для расчета рублей из Robux
 };
 
 const PaymentComponent: React.FC = () => {
@@ -36,16 +39,30 @@ const PaymentComponent: React.FC = () => {
     setIsDisabled(value < 100); // Кнопка становится неактивной, если меньше 100
   };
 
+  // Обработчик для изменения суммы в Robux
+  const handleRobuxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(event.target.value);
+    if (!isNaN(value)) {
+      setRobux(value);
+      setRublu(calculateRubluFromRobux(value));
+    } else {
+      setRobux(0); // Если введено не число, устанавливаем 0
+      setRublu(0); // Или другое значение по умолчанию
+    }
+  };
+
   return (
     <Box
       sx={{
         width: isMobile ? "100%" : "27%",
-        bgcolor: "#f4f4f4",
+        bgcolor: "black",
         padding: 4,
         borderRadius: 2,
+        boxShadow: "rgba(168, 168, 168, 0.66) 0px 1px 4px",
+        marginTop: "20px",
       }}
     >
-      <Typography variant="h6" sx={{ mb: 2 }}>
+      <Typography color="snow" variant="h6" sx={{ mb: 2 }}>
         Ты платишь
       </Typography>
       <TextField
@@ -57,9 +74,27 @@ const PaymentComponent: React.FC = () => {
         onChange={handleRubluChange}
         InputProps={{
           startAdornment: <InputAdornment position="start">₽</InputAdornment>,
+          style: { color: "snow" },
         }}
-        sx={{ mb: 2 }}
+        InputLabelProps={{
+          style: { color: "snow" },
+        }}
+        sx={{
+          mb: 2,
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+              borderColor: "white",
+            },
+            "&:hover fieldset": {
+              borderColor: "white",
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: "white",
+            },
+          },
+        }}
       />
+
       <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
         <Button
           variant="outlined"
@@ -77,18 +112,48 @@ const PaymentComponent: React.FC = () => {
         </Button>
       </Box>
 
-      <Typography variant="h6" sx={{ mb: 2 }}>
+      <Typography color="snow" variant="h6" sx={{ mb: 2 }}>
         Ты получаешь
       </Typography>
-      <Typography variant="body1" sx={{ mb: 2 }}>
+      <Typography color="snow" variant="body1" sx={{ mb: 2 }}>
         {robux} Robux
       </Typography>
+
+      <TextField
+        label="Введите сумму в Robux"
+        variant="outlined"
+        fullWidth
+        type="number"
+        value={robux}
+        onChange={handleRobuxChange}
+        InputProps={{
+          startAdornment: <InputAdornment position="start"></InputAdornment>,
+          style: { color: "snow" },
+        }}
+        InputLabelProps={{
+          style: { color: "snow" },
+        }}
+        sx={{
+          mb: 2,
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+              borderColor: "white",
+            },
+            "&:hover fieldset": {
+              borderColor: "white",
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: "white",
+            },
+          },
+        }}
+      />
 
       {/* Слайдер для изменения суммы */}
       <Slider
         value={rublu}
-        min={100} // Минимальное значение 100
-        max={10000} // Максимальное значение 10000
+        min={100}
+        max={10000}
         step={10}
         onChange={handleSliderChange}
         valueLabelDisplay="auto"
@@ -96,7 +161,7 @@ const PaymentComponent: React.FC = () => {
         sx={{ mb: 2, width: "100%" }}
       />
 
-      <Typography variant="body2" sx={{ mb: 2 }}>
+      <Typography color="snow" variant="body2" sx={{ mb: 2 }}>
         Доступно: 500 000 ₽
       </Typography>
 

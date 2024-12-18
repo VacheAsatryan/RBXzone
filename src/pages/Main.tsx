@@ -3,7 +3,7 @@ import PaymentComponent from "../components/PaymentComponent/PaymentComponent";
 
 const MainPage: FC = () => {
   return (
-    <div className="w-full  desktop:max-w-[1024px] margin-auto flex-grow bg-blue-400 flex justify-center items-center px-2 ">
+    <div className="w-full h-full flex-grow desktop:max-w-[1440px] mx-auto bg-black flex justify-center items-center px-2">
       <PaymentComponent />
     </div>
   );
