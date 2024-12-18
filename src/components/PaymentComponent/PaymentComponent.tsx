@@ -8,53 +8,61 @@ import {
   InputAdornment,
 } from "@mui/material";
 import useIsMobile from "../../hooks/useIsMobile";
+import RobuxIcon from "../../assets/icons/RobuxIcon";
 
 const calculateRobux = (rublu: number): number => {
-  return Math.floor(rublu * 1.35); // Примерный алгоритм для расчета Robux (1 рубль = 1.35 Robux)
+  return Math.floor(rublu * 1.35);
 };
 
 const calculateRubluFromRobux = (robux: number): number => {
-  return Math.floor(robux / 1.35); // Обратная формула для расчета рублей из Robux
+  return Math.floor(robux / 1.35);
 };
 
 const PaymentComponent: React.FC = () => {
   const isMobile = useIsMobile();
-  const [rublu, setRublu] = useState(0);
-  const [robux, setRobux] = useState(0);
-  const [isDisabled, setIsDisabled] = useState(false);
+  const [rublu, setRublu] = useState<string>("");
+  const [robux, setRobux] = useState<string>("");
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
-  // Обработчик для изменения суммы в рублях с текстового поля
   const handleRubluChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(event.target.value);
+    const value = event.target.value;
     setRublu(value);
-    setRobux(calculateRobux(value));
-    setIsDisabled(value < 100); // Кнопка становится неактивной, если меньше 100
+
+    if (!value || isNaN(parseFloat(value))) {
+      setRobux("");
+      setIsDisabled(true);
+    } else {
+      const numericValue = parseFloat(value);
+      setRobux(calculateRobux(numericValue).toString());
+      setIsDisabled(numericValue < 100);
+    }
   };
 
-  // Обработчик для изменения суммы слайдера
   const handleSliderChange = (event: Event, newValue: number | number[]) => {
     const value = newValue as number;
-    setRublu(value);
-    setRobux(calculateRobux(value));
-    setIsDisabled(value < 100); // Кнопка становится неактивной, если меньше 100
+    setRublu(value.toString());
+    setRobux(calculateRobux(value).toString());
+    setIsDisabled(value < 100);
   };
 
-  // Обработчик для изменения суммы в Robux
   const handleRobuxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(event.target.value);
-    if (!isNaN(value)) {
-      setRobux(value);
-      setRublu(calculateRubluFromRobux(value));
+    const value = event.target.value;
+    setRobux(value);
+
+    if (!value || isNaN(parseFloat(value))) {
+      setRublu("");
+      setIsDisabled(true);
     } else {
-      setRobux(0); // Если введено не число, устанавливаем 0
-      setRublu(0); // Или другое значение по умолчанию
+      const numericValue = parseFloat(value);
+      setRublu(calculateRubluFromRobux(numericValue).toString());
+      setIsDisabled(numericValue < 100);
     }
   };
 
   return (
     <Box
       sx={{
-        width: isMobile ? "100%" : "27%",
+        width: isMobile ? "100%" : "37%",
         bgcolor: "black",
         padding: 4,
         borderRadius: 2,
@@ -69,7 +77,7 @@ const PaymentComponent: React.FC = () => {
         label="Введите сумму в рублях"
         variant="outlined"
         fullWidth
-        type="number"
+        type="text"
         value={rublu}
         onChange={handleRubluChange}
         InputProps={{
@@ -98,14 +106,16 @@ const PaymentComponent: React.FC = () => {
       <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
         <Button
           variant="outlined"
-          onClick={() => setRublu(500)}
+          onClick={() => handleRubluChange({ target: { value: "500" } } as any)}
           sx={{ flex: 1 }}
         >
           500₽
         </Button>
         <Button
           variant="outlined"
-          onClick={() => setRublu(1000)}
+          onClick={() =>
+            handleRubluChange({ target: { value: "1000" } } as any)
+          }
           sx={{ flex: 1 }}
         >
           1000₽
@@ -115,19 +125,16 @@ const PaymentComponent: React.FC = () => {
       <Typography color="snow" variant="h6" sx={{ mb: 2 }}>
         Ты получаешь
       </Typography>
-      <Typography color="snow" variant="body1" sx={{ mb: 2 }}>
-        {robux} Robux
-      </Typography>
 
       <TextField
         label="Введите сумму в Robux"
         variant="outlined"
         fullWidth
-        type="number"
+        type="text"
         value={robux}
         onChange={handleRobuxChange}
         InputProps={{
-          startAdornment: <InputAdornment position="start"></InputAdornment>,
+          startAdornment: <InputAdornment position="start">R$</InputAdornment>,
           style: { color: "snow" },
         }}
         InputLabelProps={{
@@ -149,9 +156,8 @@ const PaymentComponent: React.FC = () => {
         }}
       />
 
-      {/* Слайдер для изменения суммы */}
       <Slider
-        value={rublu}
+        value={parseFloat(rublu) || 100}
         min={100}
         max={10000}
         step={10}
@@ -164,15 +170,25 @@ const PaymentComponent: React.FC = () => {
       <Typography color="snow" variant="body2" sx={{ mb: 2 }}>
         Доступно: 500 000 ₽
       </Typography>
-
-      <Button
-        variant="contained"
-        color="primary"
-        fullWidth
-        disabled={isDisabled}
-      >
-        Купить Робоксы
-      </Button>
+      <RobuxIcon />
+      <div className="bg-black">
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          disabled={isDisabled}
+          sx={{
+            bgcolor: isDisabled ? "rgba(255, 255, 255, 0.2)" : "primary.main", // Фон кнопки
+            color: isDisabled ? "rgba(255, 255, 255, 0.5)" : "white", // Цвет текста
+            "&:disabled": {
+              bgcolor: "rgba(255, 255, 255, 0.2)", // Задайте фон для `disabled`
+              color: "rgba(255, 255, 255, 0.5)", // Задайте текст для `disabled`
+            },
+          }}
+        >
+          Купить Робоксы
+        </Button>
+      </div>
     </Box>
   );
 };
