@@ -44,10 +44,16 @@ const Header: React.FC = () => {
       }}
     >
       <Toolbar className="flex justify-between items-center">
-        {/* Логотип */}
         <Typography
           variant="h6"
-          sx={{ fontWeight: "bold", color: "white" }}
+          sx={{
+            fontWeight: "bold",
+            color: "white",
+            transition: "font-size 0.3s",
+            "&:hover": {
+              fontSize: "1.5rem",
+            },
+          }}
           className="hover:text-gray-400"
         >
           RBXZone
