@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import useIsMobile from "../../hooks/useIsMobile";
 import RobuxIcon from "../../assets/icons/RobuxIcon";
+import VerticalStepper from "../Stepper/VerticalStepper";
 
 const calculateRobux = (rublu: number): number => {
   return Math.floor(rublu * 1.35);
@@ -23,6 +24,7 @@ const PaymentComponent: React.FC = () => {
   const [rublu, setRublu] = useState<string>("");
   const [robux, setRobux] = useState<string>("");
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const [isStepperOpen, setIsStepperOpen] = useState<boolean>(false); // Состояние для Stepper
 
   const handleRubluChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -56,6 +58,12 @@ const PaymentComponent: React.FC = () => {
       const numericValue = parseFloat(value);
       setRublu(calculateRubluFromRobux(numericValue).toString());
       setIsDisabled(numericValue < 100);
+    }
+  };
+
+  const handleBuyClick = () => {
+    if (!isDisabled) {
+      setIsStepperOpen(true); // Открыть Stepper при клике
     }
   };
 
@@ -174,21 +182,25 @@ const PaymentComponent: React.FC = () => {
       <div className="bg-black">
         <Button
           variant="contained"
+          sx={{
+            background: isDisabled ? "rgba(0, 0, 255, 0.5)" : "blue",
+            color: isDisabled ? "white" : "snow",
+            "&.Mui-disabled": {
+              background: "rgba(0, 0, 255, 0.5)",
+              color: "rgba(255, 255, 255, 0.7)",
+            },
+          }}
           color="primary"
           fullWidth
           disabled={isDisabled}
-          sx={{
-            bgcolor: isDisabled ? "rgba(255, 255, 255, 0.2)" : "primary.main", // Фон кнопки
-            color: isDisabled ? "rgba(255, 255, 255, 0.5)" : "white", // Цвет текста
-            "&:disabled": {
-              bgcolor: "rgba(255, 255, 255, 0.2)", // Задайте фон для `disabled`
-              color: "rgba(255, 255, 255, 0.5)", // Задайте текст для `disabled`
-            },
-          }}
+          onClick={handleBuyClick} // Добавляем обработчик клика
         >
           Купить Робоксы
         </Button>
       </div>
+
+      {/* Условный рендеринг Stepper */}
+      {isStepperOpen && <VerticalStepper />}
     </Box>
   );
 };
