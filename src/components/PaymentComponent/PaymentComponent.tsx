@@ -24,7 +24,7 @@ const PaymentComponent: React.FC = () => {
   const [rublu, setRublu] = useState<string>("");
   const [robux, setRobux] = useState<string>("");
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
-  const [isStepperOpen, setIsStepperOpen] = useState<boolean>(false); // Состояние для Stepper
+  const [isStepperOpen, setIsStepperOpen] = useState<boolean>(false);
 
   const handleRubluChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -63,7 +63,7 @@ const PaymentComponent: React.FC = () => {
 
   const handleBuyClick = () => {
     if (!isDisabled) {
-      setIsStepperOpen(true); // Открыть Stepper при клике
+      setIsStepperOpen(true);
     }
   };
 
@@ -183,8 +183,13 @@ const PaymentComponent: React.FC = () => {
         <Button
           variant="contained"
           sx={{
-            background: isDisabled ? "rgba(0, 0, 255, 0.5)" : "blue",
-            color: isDisabled ? "white" : "snow",
+            background:
+              "linear-gradient(45deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%)",
+            color: "white",
+            "&:hover": {
+              background:
+                "linear-gradient(45deg, rgba(253,187,45,1) 0%, rgba(34,193,195,1) 100%)",
+            },
             "&.Mui-disabled": {
               background: "rgba(0, 0, 255, 0.5)",
               color: "rgba(255, 255, 255, 0.7)",
@@ -193,13 +198,12 @@ const PaymentComponent: React.FC = () => {
           color="primary"
           fullWidth
           disabled={isDisabled}
-          onClick={handleBuyClick} // Добавляем обработчик клика
+          onClick={handleBuyClick}
         >
           Купить Робоксы
         </Button>
       </div>
 
-      {/* Условный рендеринг Stepper */}
       {isStepperOpen && <VerticalStepper />}
     </Box>
   );

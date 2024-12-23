@@ -12,6 +12,8 @@ import {
   FormControlLabel,
   Radio,
 } from "@mui/material";
+import { getPlace, postUserName } from "../../api/users";
+import axios from "axios";
 
 const VerticalStepper = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -26,20 +28,57 @@ const VerticalStepper = () => {
   const handleBack = () => setActiveStep((prev) => prev - 1);
   const handleReset = () => setActiveStep(0);
 
+  const handleNicknameSubmit = async () => {
+    setNicknameError("");
+    setServerError("");
+
+    try {
+      const response = await postUserName({ usernames: [nickname] });
+      console.log("Response from server:", response);
+      handleNext();
+    } catch (error: any) {
+      setServerError("Произошла ошибка при отправке данных. Попробуйте снова.");
+      console.error("API error:", error);
+    }
+  };
+
+  const handleUserGamesFetch = async () => {
+    const sortOrder = "Asc";
+    const limit = 10;
+    try {
+      const userId = 7683135621; // Подставьте реальный ID пользователя
+      const gamesData = await getPlace(userId, sortOrder, limit);
+      handleNext();
+
+      console.log("Games data:", gamesData);
+      // Обработка данных (например, сохранение в стейт)
+    } catch (error) {
+      setServerError("Произошла ошибка при отправке данных. Попробуйте снова.");
+      console.error("Ошибка при загрузке данных:", error);
+    }
+  };
   return (
     <div className="w-full h-full absolute bg-black top-0 left-0 flex items-center justify-center z-20">
       <Box
         sx={{
           width: "100%",
           maxWidth: 500,
-          backgroundColor: "#333",
+          backgroundImage:
+            " linear-gradient(45deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%)",
           padding: 3,
           borderRadius: 2,
           boxShadow: 3,
           color: "white",
         }}
       >
-        <Stepper activeStep={activeStep} orientation="vertical">
+        <Stepper
+          activeStep={activeStep}
+          orientation="vertical"
+          sx={{
+            background:
+              " linear-gradient(45deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%)",
+          }}
+        >
           <Step>
             <StepLabel>Введите Nickname</StepLabel>
             <StepContent>
@@ -52,9 +91,10 @@ const VerticalStepper = () => {
                 helperText={nicknameError}
                 sx={{ backgroundColor: "white", borderRadius: 1 }}
               />
+              <Typography color="error">{serverError}</Typography>
               <Button
                 variant="contained"
-                onClick={handleNext}
+                onClick={handleNicknameSubmit}
                 disabled={!nickname}
                 sx={{ mt: 2 }}
               >
@@ -78,9 +118,10 @@ const VerticalStepper = () => {
                   />
                 ))}
               </RadioGroup>
+              <Typography color="error">{serverError}</Typography>
               <Button
                 variant="contained"
-                onClick={handleNext}
+                onClick={handleUserGamesFetch}
                 disabled={!selectedPlace}
                 sx={{ mt: 2 }}
               >
