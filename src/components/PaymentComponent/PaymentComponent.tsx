@@ -99,13 +99,14 @@ const PaymentComponent: React.FC = () => {
           mb: 2,
           "& .MuiOutlinedInput-root": {
             "& fieldset": {
-              borderColor: "white",
+              borderColor: "rgb(184, 134, 11)",
+              outline: "red",
             },
             "&:hover fieldset": {
-              borderColor: "white",
+              borderColor: "rgb(184, 134, 11)",
             },
             "&.Mui-focused fieldset": {
-              borderColor: "white",
+              borderColor: "rgb(184, 134, 11)",
             },
           },
         }}
@@ -115,7 +116,11 @@ const PaymentComponent: React.FC = () => {
         <Button
           variant="outlined"
           onClick={() => handleRubluChange({ target: { value: "500" } } as any)}
-          sx={{ flex: 1 }}
+          sx={{
+            flex: 1,
+            borderColor: "rgb(184, 134, 11)",
+            color: "snow",
+          }}
         >
           500₽
         </Button>
@@ -124,7 +129,11 @@ const PaymentComponent: React.FC = () => {
           onClick={() =>
             handleRubluChange({ target: { value: "1000" } } as any)
           }
-          sx={{ flex: 1 }}
+          sx={{
+            flex: 1,
+            borderColor: "rgb(184, 134, 11)",
+            color: "snow",
+          }}
         >
           1000₽
         </Button>
@@ -152,13 +161,14 @@ const PaymentComponent: React.FC = () => {
           mb: 2,
           "& .MuiOutlinedInput-root": {
             "& fieldset": {
-              borderColor: "white",
+              borderColor: "rgb(184, 134, 11)",
+              outline: "red",
             },
             "&:hover fieldset": {
-              borderColor: "white",
+              borderColor: "rgb(184, 134, 11)",
             },
             "&.Mui-focused fieldset": {
-              borderColor: "white",
+              borderColor: "rgb(184, 134, 11)",
             },
           },
         }}
@@ -172,27 +182,39 @@ const PaymentComponent: React.FC = () => {
         onChange={handleSliderChange}
         valueLabelDisplay="auto"
         valueLabelFormat={(value) => `${value} ₽`}
-        sx={{ mb: 2, width: "100%" }}
+        sx={{
+          mb: 2,
+          width: "100%",
+          color: "yellow", // Основной цвет слайдера
+          "& .MuiSlider-thumb": {
+            backgroundColor: "rgb(184, 134, 11)", // Цвет кружка (ползунка)
+          },
+          "& .MuiSlider-track": {
+            backgroundColor: "rgb(184, 134, 11)", // Цвет линии, пройденной слайдером
+          },
+          "& .MuiSlider-rail": {
+            backgroundColor: "rgb(184, 134, 11)", // Цвет задней линии
+          },
+          "& .MuiSlider-valueLabel": {
+            backgroundColor: "rgb(184, 134, 11)", // Цвет подсказки с меткой
+          },
+        }}
       />
 
-      <Typography color="snow" variant="body2" sx={{ mb: 2 }}>
-        Доступно: 500 000 ₽
-      </Typography>
-      <RobuxIcon />
+      {/* <RobuxIcon /> */}
       <div className="bg-black">
         <Button
           variant="contained"
           sx={{
-            background:
-              "linear-gradient(45deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%)",
+            background: "rgb(184, 134, 11)",
             color: "white",
             "&:hover": {
-              background:
-                "linear-gradient(45deg, rgba(253,187,45,1) 0%, rgba(34,193,195,1) 100%)",
+              background: "",
             },
             "&.Mui-disabled": {
-              background: "rgba(0, 0, 255, 0.5)",
-              color: "rgba(255, 255, 255, 0.7)",
+              background: "#f7d06e",
+              color: " #f2f2f2",
+              opacity: "50",
             },
           }}
           color="primary"

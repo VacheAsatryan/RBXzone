@@ -6,8 +6,6 @@ export interface User {
   email: string;
 }
 
-const proxyUrl = "https://cors-anywhere.herokuapp.com/";
-
 export const postUserName = async (body: {
   usernames: string[];
 }): Promise<User[]> => {

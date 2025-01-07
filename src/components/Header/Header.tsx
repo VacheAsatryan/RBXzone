@@ -1,4 +1,3 @@
-import React from "react";
 import {
   AppBar,
   Toolbar,
@@ -10,11 +9,17 @@ import {
 } from "@mui/material";
 import { useLocation, Link } from "react-router-dom";
 import useIsMobile from "../../hooks/useIsMobile";
+import { useState } from "react";
 
 const Header: React.FC = () => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [menuOpen, setMenuOpen] = React.useState(false);
-
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const handleScroll = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
   const isMobile = useIsMobile();
 
   const location = useLocation();
@@ -71,22 +76,21 @@ const Header: React.FC = () => {
                   color: isActiveTab("/") ? "#A8A8A8A8" : "white",
                   fontWeight: "bold",
                 }}
-                className={`hover:text-gray-400`}
+                className="hover:text-gray-400"
               >
                 Купить Робуксы
               </Button>
             </Link>
-            <Link to="/pomosh">
-              <Button
-                sx={{
-                  color: isActiveTab("/pomosh") ? "#A8A8A8A8" : "white",
-                  fontWeight: "bold",
-                }}
-                className={`hover:text-gray-400 `}
-              >
-                Помощь
-              </Button>
-            </Link>
+            <Button
+              sx={{
+                color: isActiveTab("/pomosh") ? "#A8A8A8A8" : "white",
+                fontWeight: "bold",
+              }}
+              className="hover:text-gray-400"
+              onClick={() => handleScroll("footer")}
+            >
+              Помощь
+            </Button>
           </div>
         )}
 

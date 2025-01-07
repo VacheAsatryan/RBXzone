@@ -1,3 +1,8 @@
 .App {
+  height: 130vh;
   text-align: center;
+  background: black;
+}
+* {
+  scroll-behavior: smooth;
 }
