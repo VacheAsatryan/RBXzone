@@ -1,12 +1,11 @@
 import React, { FC } from "react";
 import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./routes/AppRoutes";
+import "./App.css";
 
 const App: FC = () => {
   return (
-    <div className="h-screen overflow-hidden">
-      {" "}
-      {/* Контейнер с полной высотой и без скролла */}
+    <div className="App">
       <BrowserRouter>
         <AppRoutes />
       </BrowserRouter>

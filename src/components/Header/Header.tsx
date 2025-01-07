@@ -1,4 +1,3 @@
-import React from "react";
 import {
   AppBar,
   Toolbar,
@@ -10,11 +9,17 @@ import {
 } from "@mui/material";
 import { useLocation, Link } from "react-router-dom";
 import useIsMobile from "../../hooks/useIsMobile";
+import { useState } from "react";
 
 const Header: React.FC = () => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [menuOpen, setMenuOpen] = React.useState(false);
-
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const handleScroll = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
   const isMobile = useIsMobile();
 
   const location = useLocation();
@@ -46,15 +51,17 @@ const Header: React.FC = () => {
       <Toolbar className="flex justify-between items-center">
         <Typography
           variant="h6"
+          fontStyle="italic"
+          color="rgb(184, 134, 11)"
           sx={{
             fontWeight: "bold",
-            color: "white",
-            transition: "font-size 0.3s",
+
+            transition: "transform 0.4s",
             "&:hover": {
-              fontSize: "1.5rem",
+              transform: "scale(1.3)",
             },
           }}
-          className="hover:text-gray-400"
+          className="hover:text-[rgb(184, 134, 11)]"
         >
           RBXZone
         </Typography>
@@ -68,25 +75,24 @@ const Header: React.FC = () => {
             <Link to="/">
               <Button
                 sx={{
-                  color: isActiveTab("/") ? "#A8A8A8A8" : "white",
+                  color: isActiveTab("/") ? "rgb(184, 134, 11)" : "#A8A8A8A8",
                   fontWeight: "bold",
                 }}
-                className={`hover:text-gray-400`}
+                className="hover:text-gray-400"
               >
                 Купить Робуксы
               </Button>
             </Link>
-            <Link to="/pomosh">
-              <Button
-                sx={{
-                  color: isActiveTab("/pomosh") ? "#A8A8A8A8" : "white",
-                  fontWeight: "bold",
-                }}
-                className={`hover:text-gray-400 `}
-              >
-                Помощь
-              </Button>
-            </Link>
+            <Button
+              sx={{
+                color: isActiveTab("/") ? "rgb(184, 134, 11)" : "#A8A8A8A8",
+                fontWeight: "bold",
+              }}
+              className="hover:text-gray-400"
+              onClick={() => handleScroll("footer")}
+            >
+              Помощь
+            </Button>
           </div>
         )}
 

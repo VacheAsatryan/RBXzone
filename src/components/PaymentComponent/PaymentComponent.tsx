@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import useIsMobile from "../../hooks/useIsMobile";
 import RobuxIcon from "../../assets/icons/RobuxIcon";
+import VerticalStepper from "../Stepper/VerticalStepper";
 
 const calculateRobux = (rublu: number): number => {
   return Math.floor(rublu * 1.35);
@@ -23,6 +24,7 @@ const PaymentComponent: React.FC = () => {
   const [rublu, setRublu] = useState<string>("");
   const [robux, setRobux] = useState<string>("");
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const [isStepperOpen, setIsStepperOpen] = useState<boolean>(false);
 
   const handleRubluChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -59,6 +61,12 @@ const PaymentComponent: React.FC = () => {
     }
   };
 
+  const handleBuyClick = () => {
+    if (!isDisabled) {
+      setIsStepperOpen(true);
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -91,13 +99,14 @@ const PaymentComponent: React.FC = () => {
           mb: 2,
           "& .MuiOutlinedInput-root": {
             "& fieldset": {
-              borderColor: "white",
+              borderColor: "rgb(184, 134, 11)",
+              outline: "red",
             },
             "&:hover fieldset": {
-              borderColor: "white",
+              borderColor: "rgb(184, 134, 11)",
             },
             "&.Mui-focused fieldset": {
-              borderColor: "white",
+              borderColor: "rgb(184, 134, 11)",
             },
           },
         }}
@@ -107,7 +116,11 @@ const PaymentComponent: React.FC = () => {
         <Button
           variant="outlined"
           onClick={() => handleRubluChange({ target: { value: "500" } } as any)}
-          sx={{ flex: 1 }}
+          sx={{
+            flex: 1,
+            borderColor: "rgb(184, 134, 11)",
+            color: "snow",
+          }}
         >
           500₽
         </Button>
@@ -116,7 +129,11 @@ const PaymentComponent: React.FC = () => {
           onClick={() =>
             handleRubluChange({ target: { value: "1000" } } as any)
           }
-          sx={{ flex: 1 }}
+          sx={{
+            flex: 1,
+            borderColor: "rgb(184, 134, 11)",
+            color: "snow",
+          }}
         >
           1000₽
         </Button>
@@ -144,13 +161,14 @@ const PaymentComponent: React.FC = () => {
           mb: 2,
           "& .MuiOutlinedInput-root": {
             "& fieldset": {
-              borderColor: "white",
+              borderColor: "rgb(184, 134, 11)",
+              outline: "red",
             },
             "&:hover fieldset": {
-              borderColor: "white",
+              borderColor: "rgb(184, 134, 11)",
             },
             "&.Mui-focused fieldset": {
-              borderColor: "white",
+              borderColor: "rgb(184, 134, 11)",
             },
           },
         }}
@@ -164,31 +182,51 @@ const PaymentComponent: React.FC = () => {
         onChange={handleSliderChange}
         valueLabelDisplay="auto"
         valueLabelFormat={(value) => `${value} ₽`}
-        sx={{ mb: 2, width: "100%" }}
+        sx={{
+          mb: 2,
+          width: "100%",
+          color: "yellow", // Основной цвет слайдера
+          "& .MuiSlider-thumb": {
+            backgroundColor: "rgb(184, 134, 11)", // Цвет кружка (ползунка)
+          },
+          "& .MuiSlider-track": {
+            backgroundColor: "rgb(184, 134, 11)", // Цвет линии, пройденной слайдером
+          },
+          "& .MuiSlider-rail": {
+            backgroundColor: "rgb(184, 134, 11)", // Цвет задней линии
+          },
+          "& .MuiSlider-valueLabel": {
+            backgroundColor: "rgb(184, 134, 11)", // Цвет подсказки с меткой
+          },
+        }}
       />
 
-      <Typography color="snow" variant="body2" sx={{ mb: 2 }}>
-        Доступно: 500 000 ₽
-      </Typography>
-      <RobuxIcon />
+      {/* <RobuxIcon /> */}
       <div className="bg-black">
         <Button
           variant="contained"
+          sx={{
+            background: "rgb(184, 134, 11)",
+            color: "white",
+            "&:hover": {
+              background: "",
+            },
+            "&.Mui-disabled": {
+              background: "#f7d06e",
+              color: " #f2f2f2",
+              opacity: "50",
+            },
+          }}
           color="primary"
           fullWidth
           disabled={isDisabled}
-          sx={{
-            bgcolor: isDisabled ? "rgba(255, 255, 255, 0.2)" : "primary.main", // Фон кнопки
-            color: isDisabled ? "rgba(255, 255, 255, 0.5)" : "white", // Цвет текста
-            "&:disabled": {
-              bgcolor: "rgba(255, 255, 255, 0.2)", // Задайте фон для `disabled`
-              color: "rgba(255, 255, 255, 0.5)", // Задайте текст для `disabled`
-            },
-          }}
+          onClick={handleBuyClick}
         >
           Купить Робоксы
         </Button>
       </div>
+
+      {isStepperOpen && <VerticalStepper />}
     </Box>
   );
 };
