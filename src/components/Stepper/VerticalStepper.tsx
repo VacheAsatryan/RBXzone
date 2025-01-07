@@ -12,12 +12,11 @@ import {
   FormControlLabel,
   Radio,
 } from "@mui/material";
+import { postUserName } from "../../api/users";
 
 const VerticalStepper = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [nickname, setNickname] = useState("");
-  const [places, setPlaces] = useState(["Place 1", "Place 2", "Place 3"]);
-  const [selectedPlace, setSelectedPlace] = useState("");
   const [robuxAmount, setRobuxAmount] = useState(0);
   const [nicknameError, setNicknameError] = useState("");
   const [serverError, setServerError] = useState("");
@@ -25,6 +24,20 @@ const VerticalStepper = () => {
   const handleNext = () => setActiveStep((prev) => prev + 1);
   const handleBack = () => setActiveStep((prev) => prev - 1);
   const handleReset = () => setActiveStep(0);
+
+  const handleNicknameSubmit = async () => {
+    setNicknameError("");
+    setServerError("");
+
+    try {
+      const response = await postUserName({ usernames: [nickname] });
+      console.log("Response from server:", response);
+      handleNext();
+    } catch (error: any) {
+      setServerError("Произошла ошибка при отправке данных. Попробуйте снова.");
+      console.error("API error:", error);
+    }
+  };
 
   const commonInputStyles = {
     "& .MuiOutlinedInput-root": {
@@ -97,12 +110,14 @@ const VerticalStepper = () => {
                 onChange={(e) => setNickname(e.target.value)}
                 error={!!nicknameError}
                 helperText={nicknameError}
-                sx={{ ...commonInputStyles, mt: 2, mb: 2 }}
+                sx={{ ...commonInputStyles, mt: 2 }}
               />
-              <Typography sx={{ color: "white" }}>{serverError}</Typography>
+              <Typography fontSize="10px" sx={{ mb: 2, color: "red" }}>
+                {serverError}
+              </Typography>
               <Button
                 variant="contained"
-                onClick={handleNext}
+                onClick={handleNicknameSubmit}
                 disabled={!nickname}
                 sx={{
                   background: "rgb(184, 134, 11)",
@@ -114,43 +129,6 @@ const VerticalStepper = () => {
                     background: "#f7d06e",
                     color: " #f2f2f2",
                     opacity: "50",
-                  },
-                }}
-              >
-                Далее
-              </Button>
-            </StepContent>
-          </Step>
-          <Step>
-            <StepLabel>
-              <Typography sx={{ color: "white" }}>Выберите место</Typography>
-            </StepLabel>
-            <StepContent>
-              <RadioGroup
-                value={selectedPlace}
-                onChange={(e) => setSelectedPlace(e.target.value)}
-              >
-                {places.map((place) => (
-                  <FormControlLabel
-                    key={place}
-                    value={place}
-                    control={<Radio sx={{ color: "white" }} />}
-                    label={
-                      <Typography sx={{ color: "white" }}>{place}</Typography>
-                    }
-                  />
-                ))}
-              </RadioGroup>
-              <Typography sx={{ color: "white" }}>{serverError}</Typography>
-              <Button
-                variant="contained"
-                onClick={handleNext}
-                disabled={!selectedPlace}
-                sx={{
-                  mt: 2,
-                  backgroundColor: "rgb(184, 134, 11)",
-                  "&:hover": {
-                    backgroundColor: "rgb(184, 134, 11)",
                   },
                 }}
               >

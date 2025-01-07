@@ -51,15 +51,17 @@ const Header: React.FC = () => {
       <Toolbar className="flex justify-between items-center">
         <Typography
           variant="h6"
+          fontStyle="italic"
+          color="rgb(184, 134, 11)"
           sx={{
             fontWeight: "bold",
-            color: "white",
-            transition: "font-size 0.3s",
+
+            transition: "transform 0.4s",
             "&:hover": {
-              fontSize: "1.5rem",
+              transform: "scale(1.3)",
             },
           }}
-          className="hover:text-gray-400"
+          className="hover:text-[rgb(184, 134, 11)]"
         >
           RBXZone
         </Typography>
@@ -73,7 +75,7 @@ const Header: React.FC = () => {
             <Link to="/">
               <Button
                 sx={{
-                  color: isActiveTab("/") ? "#A8A8A8A8" : "white",
+                  color: isActiveTab("/") ? "rgb(184, 134, 11)" : "#A8A8A8A8",
                   fontWeight: "bold",
                 }}
                 className="hover:text-gray-400"
@@ -83,7 +85,7 @@ const Header: React.FC = () => {
             </Link>
             <Button
               sx={{
-                color: isActiveTab("/pomosh") ? "#A8A8A8A8" : "white",
+                color: isActiveTab("/") ? "rgb(184, 134, 11)" : "#A8A8A8A8",
                 fontWeight: "bold",
               }}
               className="hover:text-gray-400"

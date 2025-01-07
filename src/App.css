@@ -1,7 +1,7 @@
 .App {
   height: 130vh;
   text-align: center;
-  background: black;
+  background: rgb(184, 134, 11);
 }
 * {
   scroll-behavior: smooth;
