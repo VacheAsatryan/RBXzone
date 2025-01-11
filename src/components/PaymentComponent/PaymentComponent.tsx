@@ -166,7 +166,6 @@ const PaymentComponent: React.FC = () => {
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
                 borderColor: "rgb(184, 134, 11)",
-                outline: "red",
               },
               "&:hover fieldset": {
                 borderColor: "rgb(184, 134, 11)",
@@ -174,6 +173,12 @@ const PaymentComponent: React.FC = () => {
               "&.Mui-focused fieldset": {
                 borderColor: "rgb(184, 134, 11)",
               },
+            },
+            "& input:-webkit-autofill": {
+              WebkitBoxShadow: "0 0 0 100px black inset",
+              WebkitTextFillColor: "white",
+              caretColor: "white",
+              borderRadius: "inherit",
             },
           }}
         />
@@ -232,7 +237,6 @@ const PaymentComponent: React.FC = () => {
             "& .MuiOutlinedInput-root": {
               "& fieldset": {
                 borderColor: "rgb(184, 134, 11)",
-                outline: "red",
               },
               "&:hover fieldset": {
                 borderColor: "rgb(184, 134, 11)",
@@ -240,6 +244,12 @@ const PaymentComponent: React.FC = () => {
               "&.Mui-focused fieldset": {
                 borderColor: "rgb(184, 134, 11)",
               },
+            },
+            "& input:-webkit-autofill": {
+              WebkitBoxShadow: "0 0 0 100px black inset",
+              WebkitTextFillColor: "white",
+              caretColor: "white",
+              borderRadius: "inherit",
             },
           }}
         />

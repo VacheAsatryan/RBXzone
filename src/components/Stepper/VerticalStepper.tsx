@@ -219,7 +219,26 @@ const VerticalStepper: FC<verticalStepperProps> = ({
                 onChange={(e) => setNickname(e.target.value)}
                 error={!!nicknameError}
                 helperText={nicknameError}
-                sx={{ ...commonInputStyles, mt: 2 }}
+                sx={{
+                  mb: 2,
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "rgb(184, 134, 11)",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "rgb(184, 134, 11)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "rgb(184, 134, 11)",
+                    },
+                  },
+                  "& input:-webkit-autofill": {
+                    WebkitBoxShadow: "0 0 0 100px black inset",
+                    WebkitTextFillColor: "white",
+                    caretColor: "white",
+                    borderRadius: "inherit",
+                  },
+                }}
               />
               <Typography fontSize="10px" sx={{ mb: 2, color: "red" }}>
                 {serverError}
