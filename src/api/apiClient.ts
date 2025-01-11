@@ -14,3 +14,10 @@ export const apiPlace = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+export const apiAvatar = axios.create({
+  baseURL: `${proxyUrl}https://thumbnails.roblox.com`,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});

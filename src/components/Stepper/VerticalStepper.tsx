@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import {
   Box,
   Stepper,
@@ -8,22 +8,53 @@ import {
   Button,
   Typography,
   TextField,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
+  Avatar,
 } from "@mui/material";
-import { postUserName } from "../../api/users";
-
-const VerticalStepper = () => {
+import {
+  getPlace,
+  getUserAvatar,
+  getUserGamePass,
+  postUserName,
+} from "../../api/users";
+interface verticalStepperProps {
+  isStepperOpen: boolean;
+  setIsStepperOpen: any;
+  selectedPrice: number;
+}
+const VerticalStepper: FC<verticalStepperProps> = ({
+  isStepperOpen,
+  setIsStepperOpen,
+  selectedPrice,
+}) => {
   const [activeStep, setActiveStep] = useState(0);
   const [nickname, setNickname] = useState("");
-  const [robuxAmount, setRobuxAmount] = useState(0);
   const [nicknameError, setNicknameError] = useState("");
   const [serverError, setServerError] = useState("");
+  const [avatar, setAvatar] = useState<string | null>();
+  const [placeName, setPlaceName] = useState("");
+  const [placeID, setPlaceID] = useState();
+  const [RobuxIcon, setRobux] = useState(0);
+  const popupRef = useRef<HTMLDivElement | null>(null);
 
   const handleNext = () => setActiveStep((prev) => prev + 1);
-  const handleBack = () => setActiveStep((prev) => prev - 1);
-  const handleReset = () => setActiveStep(0);
+
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      if (
+        popupRef.current &&
+        !popupRef.current.contains(event.target as Node)
+      ) {
+        setIsStepperOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClick);
+
+    // Удаляем слушатель при размонтировании
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+    };
+  }, [setIsStepperOpen]);
 
   const handleNicknameSubmit = async () => {
     setNicknameError("");
@@ -31,11 +62,76 @@ const VerticalStepper = () => {
 
     try {
       const response = await postUserName({ usernames: [nickname] });
-      console.log("Response from server:", response);
-      handleNext();
+      console.log("Response from server:", response.data);
+
+      const userID = response.data?.[0]?.id;
+      if (!userID) {
+        console.error("No user ID found in the response");
+        setServerError("Не удалось получить ID пользователя.");
+        return;
+      }
+
+      try {
+        const req = await getPlace(userID);
+        const avatarResponse = await getUserAvatar(userID);
+        if (avatarResponse[0].imageUrl) {
+          setAvatar(avatarResponse[0].imageUrl);
+        } else {
+          console.error("Avatar image URL not found");
+          setServerError("Не удалось загрузить аватар.");
+        }
+
+        if (req?.[0]?.id) {
+          console.log("User place ID:", req[0]);
+          setPlaceName(req?.[0].name);
+          setPlaceID(req?.[0].id);
+          await handleNext();
+        } else {
+          console.error("No user place found in the response");
+          setServerError("Не удалось получить информацию о месте.");
+        }
+      } catch (placeError) {
+        console.error("Error fetching user place:", placeError);
+        setServerError("Не удалось получить информацию о месте.");
+      }
     } catch (error: any) {
-      setServerError("Произошла ошибка при отправке данных. Попробуйте снова.");
       console.error("API error:", error);
+      setServerError("Произошла ошибка при отправке данных. Попробуйте снова.");
+    }
+  };
+
+  const handleGamePassSubmit = async () => {
+    try {
+      if (!placeID) {
+        console.error("Place ID is not set");
+        return;
+      }
+
+      const req = await getUserGamePass(placeID);
+      console.log(req, "req");
+
+      if (!req || req.length === 0) {
+        console.error("No game passes found for the given place ID.");
+        return;
+      }
+
+      const price = req.filter((el: any) => el?.price === selectedPrice);
+      console.log(price, "price");
+      setRobux(price);
+
+      if (!price || price.length === 0) {
+        console.error("Selected price not found in the game passes.");
+        setServerError("Выбранная цена не найдена. Попробуйте снова.");
+        return; // Остановить выполнение, если цена не найдена
+      }
+
+      // Если цена найдена, можно продолжить
+      await handleNext();
+    } catch (placeError) {
+      console.error("Error fetching game pass data:", placeError);
+      setServerError(
+        "Произошла ошибка при получении данных. Попробуйте снова."
+      );
     }
   };
 
@@ -50,23 +146,36 @@ const VerticalStepper = () => {
       "&.Mui-focused fieldset": {
         borderColor: "rgb(184, 134, 11)",
       },
+      "& input": {
+        color: "white",
+        backgroundColor: "black",
+      },
+    },
+    "& .MuiInputLabel-root": {
+      color: "gray",
+    },
+
+    "& .MuiInputBase-input": {
+      color: "red",
     },
   };
 
   return (
     <div
+      ref={popupRef}
       style={{
         position: "fixed",
-        top: 0,
+        top: 60,
         left: 0,
         width: "100vw",
-        height: "100vh",
+        height: "90vh",
         backgroundColor: "rgb(184, 134, 11)",
         zIndex: 1300,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         overflow: "hidden",
+        visibility: isStepperOpen ? "visible" : "hidden",
       }}
     >
       <Box
@@ -137,6 +246,57 @@ const VerticalStepper = () => {
             </StepContent>
           </Step>
           <Step>
+            <StepLabel sx={{ color: "white" }}>
+              <Typography sx={{ color: "white" }}> Place</Typography>
+            </StepLabel>
+            <StepContent>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                }}
+              >
+                <Box
+                  sx={{
+                    border: "1px solid rgb(184, 134, 11)",
+                    padding: "10px",
+                    margin: "20px",
+                    marginLeft: "0px",
+                    display: "flex",
+                    gap: "20px",
+                    borderRadius: "20px",
+                    width: "fit-content",
+                  }}
+                >
+                  <Avatar src={avatar ? avatar : ""} alt="avatar" />
+                  <Box>
+                    <Typography color="#ffffff">{placeName}</Typography>
+                  </Box>
+                </Box>
+                <Button
+                  variant="contained"
+                  onClick={handleNicknameSubmit}
+                  sx={{
+                    background: "rgb(184, 134, 11)",
+                    color: "white",
+                    alignSelf: "flex-start",
+                    "&:hover": {
+                      background: "",
+                    },
+                    "&.Mui-disabled": {
+                      background: "#f7d06e",
+                      color: " #f2f2f2",
+                      opacity: "50",
+                    },
+                  }}
+                >
+                  Далее
+                </Button>
+              </Box>
+            </StepContent>
+          </Step>
+          <Step>
             <StepLabel>
               <Typography sx={{ color: "white" }}>
                 Настройка Game Pass
@@ -155,7 +315,7 @@ const VerticalStepper = () => {
               </Typography>
               <Button
                 variant="contained"
-                href="https://www.roblox.com/"
+                href={`https://create.roblox.com/dashboard/creations/experiences/${placeID}/passes/create`}
                 target="_blank"
                 sx={{
                   mt: 2,
@@ -168,9 +328,10 @@ const VerticalStepper = () => {
               >
                 Перейти в Roblox
               </Button>
+
               <Button
                 variant="contained"
-                onClick={handleNext}
+                onClick={handleGamePassSubmit}
                 sx={{
                   mt: 2,
                   backgroundColor: "rgb(184, 134, 11)",
@@ -185,34 +346,17 @@ const VerticalStepper = () => {
           </Step>
           <Step>
             <StepLabel>
-              <Typography sx={{ color: "white" }}>
-                Выберите количество Robux
-              </Typography>
+              <Typography sx={{ color: "white" }}></Typography>
             </StepLabel>
             <StepContent>
-              <TextField
-                fullWidth
-                type="number"
-                label="Количество Robux"
-                value={robuxAmount}
-                onChange={(e) => setRobuxAmount(Number(e.target.value))}
-                sx={{ ...commonInputStyles }}
-              />
-              <Typography sx={{ color: "white" }}>{serverError}</Typography>
-              <Button
-                variant="contained"
-                onClick={handleNext}
-                disabled={!robuxAmount}
-                sx={{
-                  mt: 2,
-                  backgroundColor: "rgb(184, 134, 11)",
-                  "&:hover": {
-                    backgroundColor: "rgb(184, 134, 11)",
-                  },
-                }}
-              >
-                Купить
-              </Button>
+              <Typography>done</Typography>
+              <Typography sx={{ color: "white" }}>Name:{nickname}</Typography>
+              <Typography sx={{ color: "white" }}>
+                Place Name:{placeName}
+              </Typography>
+              <Typography sx={{ color: "white" }}>
+                selectedPrice:{selectedPrice}
+              </Typography>
             </StepContent>
           </Step>
         </Stepper>
