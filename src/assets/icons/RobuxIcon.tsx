@@ -4,10 +4,11 @@ const RobuxIcon = ({ width = "10px", height = "10px" }) => {
       <svg
         version="1.0"
         xmlns="http://www.w3.org/2000/svg"
-        width="40px"
-        height="40px"
+        width="20px"
+        height="20px"
         viewBox="0 0 88.000000 114.000000"
         preserveAspectRatio="xMidYMid meet"
+        fill="white"
       >
         <metadata>
           Created by potrace 1.16, written by Peter Selinger 2001-2019

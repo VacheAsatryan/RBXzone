@@ -2,6 +2,7 @@
   height: 130vh;
   text-align: center;
   background: rgb(184, 134, 11);
+  max-height: 130vh;
 }
 * {
   scroll-behavior: smooth;

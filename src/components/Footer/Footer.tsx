@@ -1,6 +1,6 @@
 import React, { FC, useState, useRef, useEffect } from "react";
-import "animate.css";
 import { FaTelegramPlane, FaEnvelope } from "react-icons/fa";
+import "./Footer.css";
 
 const Footer: FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -32,7 +32,7 @@ const Footer: FC = () => {
       ref={footerRef}
       id="footer"
       className={`w-full py-5 min-h-[120px] px-5 bg-black transition duration-500 ease-in-out ${
-        isVisible ? "animate__animated animate__bounceInUp" : "opacity-0"
+        isVisible ? "animate-custom-fade-in" : "opacity-0"
       }`}
     >
       <div className="text-white text-center mb-4">

@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import useIsMobile from "../../hooks/useIsMobile";
 import VerticalStepper from "../Stepper/VerticalStepper";
+import { useNavigate } from "react-router-dom";
+import RobuxIcon from "../../assets/icons/RobuxIcon";
 
 const calculateRobux = (rublu: number): number => {
   return Math.floor(rublu * 1.35);
@@ -89,6 +91,7 @@ const PaymentComponent: React.FC = () => {
   const [robux, setRobux] = useState<string>("");
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [isStepperOpen, setIsStepperOpen] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const handleRubluChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -126,11 +129,12 @@ const PaymentComponent: React.FC = () => {
   };
 
   const handleBuyClick = () => {
-    if (!isDisabled) {
-      setIsStepperOpen(true);
-    }
+    // if (!isDisabled) {
+    //   setIsStepperOpen(true);
+    // }
+    localStorage.setItem("robux", robux);
+    navigate("/pay");
   };
-  console.log(isStepperOpen, "issss");
 
   return (
     <ThemeProvider theme={theme}>
@@ -225,7 +229,9 @@ const PaymentComponent: React.FC = () => {
           onChange={handleRobuxChange}
           InputProps={{
             startAdornment: (
-              <InputAdornment position="start">R$</InputAdornment>
+              <InputAdornment position="start">
+                <RobuxIcon />
+              </InputAdornment>
             ),
             style: { color: "snow" },
           }}
@@ -306,11 +312,11 @@ const PaymentComponent: React.FC = () => {
           </Button>
         </div>
 
-        <VerticalStepper
+        {/* <VerticalStepper
           selectedPrice={Number(robux)}
           isStepperOpen={isStepperOpen}
           setIsStepperOpen={setIsStepperOpen}
-        />
+        /> */}
       </Box>
     </ThemeProvider>
   );

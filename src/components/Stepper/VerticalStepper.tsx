@@ -16,10 +16,13 @@ import {
   getUserGamePass,
   postUserName,
 } from "../../api/users";
+import Popup from "../PopupComponent/PopupComponent";
+import { useNavigate } from "react-router-dom";
+import RobuxIcon from "../../assets/icons/RobuxIcon";
 interface verticalStepperProps {
-  isStepperOpen: boolean;
-  setIsStepperOpen: any;
-  selectedPrice: number;
+  isStepperOpen?: boolean;
+  setIsStepperOpen?: any;
+  selectedPrice?: number;
 }
 const VerticalStepper: FC<verticalStepperProps> = ({
   isStepperOpen,
@@ -33,28 +36,35 @@ const VerticalStepper: FC<verticalStepperProps> = ({
   const [avatar, setAvatar] = useState<string | null>();
   const [placeName, setPlaceName] = useState("");
   const [placeID, setPlaceID] = useState();
-  const [RobuxIcon, setRobux] = useState(0);
+  const [robux, setRobux] = useState(0);
   const popupRef = useRef<HTMLDivElement | null>(null);
+  const [open, setOpen] = useState(false);
 
   const handleNext = () => setActiveStep((prev) => prev + 1);
-
+  const savedRobux = localStorage.getItem("robux");
+  const navigate = useNavigate();
   useEffect(() => {
-    const handleClick = (event: MouseEvent) => {
-      if (
-        popupRef.current &&
-        !popupRef.current.contains(event.target as Node)
-      ) {
-        setIsStepperOpen(false);
-      }
-    };
+    if (!savedRobux) {
+      navigate("/");
+    }
+  });
 
-    document.addEventListener("mousedown", handleClick);
+  // useEffect(() => {
+  //   const handleClick = (event: MouseEvent) => {
+  //     if (
+  //       popupRef.current &&
+  //       !popupRef.current.contains(event.target as Node)
+  //     ) {
+  //     }
+  //   };
 
-    // Удаляем слушатель при размонтировании
-    return () => {
-      document.removeEventListener("mousedown", handleClick);
-    };
-  }, [setIsStepperOpen]);
+  //   document.addEventListener("mousedown", handleClick);
+
+  //   // Удаляем слушатель при размонтировании
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClick);
+  //   };
+  // }, [setIsStepperOpen]);
 
   const handleNicknameSubmit = async () => {
     setNicknameError("");
@@ -115,17 +125,18 @@ const VerticalStepper: FC<verticalStepperProps> = ({
         return;
       }
 
-      const price = req.filter((el: any) => el?.price === selectedPrice);
+      const price = req.filter((el: any) => el?.price === Number(savedRobux));
       console.log(price, "price");
       setRobux(price);
+      console.log(savedRobux, "saved");
+      console.log(price, "price");
 
       if (!price || price.length === 0) {
         console.error("Selected price not found in the game passes.");
         setServerError("Выбранная цена не найдена. Попробуйте снова.");
-        return; // Остановить выполнение, если цена не найдена
+        return;
       }
 
-      // Если цена найдена, можно продолжить
       await handleNext();
     } catch (placeError) {
       console.error("Error fetching game pass data:", placeError);
@@ -133,6 +144,10 @@ const VerticalStepper: FC<verticalStepperProps> = ({
         "Произошла ошибка при получении данных. Попробуйте снова."
       );
     }
+  };
+  console.log(open, "openn");
+  const handlePopupOpen = () => {
+    setOpen(true);
   };
 
   const commonInputStyles = {
@@ -154,7 +169,6 @@ const VerticalStepper: FC<verticalStepperProps> = ({
     "& .MuiInputLabel-root": {
       color: "gray",
     },
-
     "& .MuiInputBase-input": {
       color: "red",
     },
@@ -164,18 +178,13 @@ const VerticalStepper: FC<verticalStepperProps> = ({
     <div
       ref={popupRef}
       style={{
-        position: "fixed",
-        top: 60,
-        left: 0,
         width: "100vw",
-        height: "90vh",
+        height: "100%",
         backgroundColor: "rgb(184, 134, 11)",
         zIndex: 1300,
         display: "flex",
-        alignItems: "center",
         justifyContent: "center",
-        overflow: "hidden",
-        visibility: isStepperOpen ? "visible" : "hidden",
+        alignItems: "center",
       }}
     >
       <Box
@@ -220,7 +229,6 @@ const VerticalStepper: FC<verticalStepperProps> = ({
                 error={!!nicknameError}
                 helperText={nicknameError}
                 sx={{
-                  mb: 2,
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": {
                       borderColor: "rgb(184, 134, 11)",
@@ -232,14 +240,24 @@ const VerticalStepper: FC<verticalStepperProps> = ({
                       borderColor: "rgb(184, 134, 11)",
                     },
                   },
+                  "& input": {
+                    color: "white",
+                    backgroundColor: "black",
+                    fontSize: "16px",
+                    caretColor: "white",
+                  },
                   "& input:-webkit-autofill": {
                     WebkitBoxShadow: "0 0 0 100px black inset",
                     WebkitTextFillColor: "white",
                     caretColor: "white",
-                    borderRadius: "inherit",
+                    backgroundColor: "black !important",
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "gray",
                   },
                 }}
               />
+
               <Typography fontSize="10px" sx={{ mb: 2, color: "red" }}>
                 {serverError}
               </Typography>
@@ -365,17 +383,85 @@ const VerticalStepper: FC<verticalStepperProps> = ({
           </Step>
           <Step>
             <StepLabel>
-              <Typography sx={{ color: "white" }}></Typography>
+              <Typography sx={{ color: "white" }}>
+                Подтверждение заказа
+              </Typography>
             </StepLabel>
-            <StepContent>
-              <Typography>done</Typography>
-              <Typography sx={{ color: "white" }}>Name:{nickname}</Typography>
-              <Typography sx={{ color: "white" }}>
-                Place Name:{placeName}
+            <StepContent
+              sx={{
+                display: "flex",
+              }}
+            >
+              <Typography
+                fontSize="small"
+                textAlign="start"
+                mt="40px"
+                color="grey"
+              >
+                Проверьте детали вашего заказа и нажмите оплатить доставку
+                робуксов занимает 5-7 дней
               </Typography>
-              <Typography sx={{ color: "white" }}>
-                selectedPrice:{selectedPrice}
-              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                }}
+              >
+                <Box
+                  sx={{
+                    border: "1px solid rgb(184, 134, 11)",
+                    padding: "10px",
+                    margin: "20px",
+                    marginLeft: "0px",
+                    display: "flex",
+                    gap: "20px",
+                    borderRadius: "20px",
+                    width: "fit-content",
+                  }}
+                >
+                  <Avatar src={avatar ? avatar : ""} alt="avatar" />
+                  <Box>
+                    <Typography color="#ffffff">{placeName}</Typography>
+                  </Box>
+                </Box>
+              </Box>
+              <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "5px" }}>
+                <Typography textAlign="start" fontSize="small" color="grey">
+                  к покупке {savedRobux}
+                </Typography>
+                <RobuxIcon />
+              </Box>
+              <Button
+                variant="contained"
+                fullWidth
+                onClick={handlePopupOpen}
+                sx={{
+                  mt: 2,
+                  borderRadius: "20px",
+                  backgroundColor: "rgb(184, 134, 11)",
+                  "&:hover": {
+                    backgroundColor: "rgb(184, 134, 11)",
+                  },
+                }}
+              >
+                Оплатить
+              </Button>
+              <Popup
+                open={open}
+                onClose={() => setOpen(false)}
+                title="Example Popup"
+                actions={
+                  <>
+                    <Button onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button onClick={() => alert("Action performed")}>
+                      Confirm
+                    </Button>
+                  </>
+                }
+              >
+                <p>This is the content of the popup.</p>
+              </Popup>
             </StepContent>
           </Step>
         </Stepper>

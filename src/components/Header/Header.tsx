@@ -55,7 +55,7 @@ const Header: React.FC = () => {
           color="rgb(184, 134, 11)"
           sx={{
             fontWeight: "bold",
-
+            cursor: "pointer",
             transition: "transform 0.4s",
             "&:hover": {
               transform: "scale(1.3)",
@@ -63,7 +63,7 @@ const Header: React.FC = () => {
           }}
           className="hover:text-[rgb(184, 134, 11)]"
         >
-          RBXZone
+          <a href="/"> RBXZone</a>
         </Typography>
 
         {isMobile ? (

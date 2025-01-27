@@ -1,0 +1,21 @@
+@keyframes customFadeInUp {
+  0% {
+    opacity: 0; /* Элемент невидим */
+    transform: translateY(50px); /* Смещён вниз */
+  }
+  100% {
+    opacity: 1; /* Элемент становится видимым */
+    transform: translateY(0); /* Возвращается на место */
+  }
+}
+
+.animate-custom-fade-in {
+  animation-name: customFadeInUp; /* Название анимации */
+  animation-duration: 1s; /* Продолжительность анимации */
+  animation-timing-function: ease-in-out; /* Плавный эффект */
+  animation-fill-mode: forwards; /* Сохраняет конечное состояние */
+}
+
+.opacity-0 {
+  opacity: 0; /* Начальное состояние, если элемент невидим */
+}
